@@ -4,7 +4,7 @@
 # See LICENSE file for details.
 
 # standard library modules, , ,
-import argparse
+import argparse, argcomplete
 import logging
 import sys
 import pkg_resources
@@ -148,6 +148,9 @@ def main():
     # may pass them on to (for example) the build tool being used
     split_args = splitList(sys.argv, '--')
     following_args = reduce(lambda x,y: x + ['--'] + y, split_args[1:], [])[1:]
+
+    # adding tab completion
+    argcomplete.autocomplete(parser)
 
     # when args are passed directly we need to strip off the program name
     # (hence [:1])

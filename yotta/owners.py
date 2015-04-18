@@ -5,7 +5,7 @@
 
 # standard library modules, , ,
 from __future__ import print_function
-import argparse
+import argparse, argcomplete
 import logging
 import os
 

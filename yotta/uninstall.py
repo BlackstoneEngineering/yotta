@@ -4,7 +4,7 @@
 # See LICENSE file for details.
 
 # standard library modules, , ,
-import argparse
+import argparse, argcomplete
 import logging
 import os
 import re
