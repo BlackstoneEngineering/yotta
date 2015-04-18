@@ -56,5 +56,6 @@ setup(
         'jsonschema>=2.4.0,<3.0',
         'mbed_test_wrapper>=0.0.2,<0.1.0',
         'valinor>=0.0.0,<1.0'
+        #TODO: add argcomplete here?
     ] + platform_deps
 )
