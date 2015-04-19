@@ -4,7 +4,7 @@
 # See LICENSE file for details.
 
 # standard library modules, , ,
-import argparse, argcomplete
+import argcomplete, argparse
 import logging
 import sys
 import pkg_resources
@@ -151,7 +151,7 @@ def main():
 
     # adding tab completion
     argcomplete.autocomplete(parser)
-
+    
     # when args are passed directly we need to strip off the program name
     # (hence [:1])
     args = parser.parse_args(split_args[0][1:])
