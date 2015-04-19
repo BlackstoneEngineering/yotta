@@ -1,3 +1,4 @@
+# PYTHON_ARGCOMPLETE_OK
 # Copyright 2014-2015 ARM Limited
 #
 # Licensed under the Apache License, Version 2.0
@@ -74,7 +75,8 @@ def main():
 
     parser.add_argument('-t', '--target', dest='target',
         default=detect.defaultTarget(),
-        help='Set the build and dependency resolution target (targetname[,versionspec_or_url])'
+        help='Set the build and dependency resolution target (targetname[,versionspec_or_url])',
+        metavar="TARGET", choices=('target1', 'target2', 'target3')
     )
 
     def addParser(name, module, description, help=None):
@@ -151,7 +153,7 @@ def main():
 
     # adding tab completion
     argcomplete.autocomplete(parser)
-    
+
     # when args are passed directly we need to strip off the program name
     # (hence [:1])
     args = parser.parse_args(split_args[0][1:])
