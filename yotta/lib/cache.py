@@ -12,16 +12,18 @@ import os
 import fsutils
 # json, , read / write cache as json 
 import json
-# call, , used to translate paths using cygpath if you're running cygwin
-from subprocess import call
+# checklocation, , used to translate paths using cygpath if you're running cygwin
+import subprocess
 
 # constants
 cache_location = os.path.expanduser('~/.yotta/cache/')
 
-#if (os.name == 'posix') and os.environ['OS'] == 'Windows_NT':
-#    print("Cygwin Detected, translating cache_location")
-#    #TODO: need to redirect stdout to cache_location to capture the path for cygwin posix conversions
-#    cache_location =  call(["cygpath","-a","-w", cache_location])
+#cygwin
+if (os.name == 'posix') and os.environ['OS'] == 'Windows_NT':
+    logging.debug("Cygwin Detected, translating cache_location")
+    cache_location = subprocess.check_output(['cygpath','-a','-w',cache_location])
+    cache_location = cache_location.replace('\n','')
+
 
 # public API used to access the "cache"
 
@@ -39,6 +41,9 @@ def get(fname):
         return []
 
 def set(fname, value):
+    if not os.path.exists(cache_location):
+        os.mkdir(cache_location)
+        logging.debug("cache directory didn't exist at <%s> so I created it" %cache_location)
     logging.debug("setting cache file %s with contents %s" % (fname,value))
     with open((cache_location+fname),'w+') as f:
         json.dump(value,f)
