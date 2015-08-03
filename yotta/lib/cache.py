@@ -18,18 +18,23 @@ from subprocess import call
 # constants
 cache_location = os.path.expanduser('~/.yotta/cache/')
 
+<<<<<<< HEAD
 #if (os.name == 'posix') and os.environ['OS'] == 'Windows_NT':
 #    print("Cygwin Detected, translating cache_location")
 #    #TODO: need to redirect stdout to cache_location to capture the path for cygwin posix conversions
 #    cache_location =  call(["cygpath","-a","-w", cache_location])
+=======
+#if os.name == 'posix':
+#    cache_location = 
+>>>>>>> d3c918ad8bbbe05da58ff8fd612f953352eab901
 
 # public API used to access the "cache"
 
 def get(fname):
     logging.debug("getting file %s" %fname)
     #if file exists, return contents
-    if(os.isfile(cache_location+fname)):
-        with open(cache_location,'r') as f:
+    if(os.path.isfile((cache_location+fname))):
+        with open(cache_location+fname,'r') as f:
             x = json.load(f)
             logging.debug("Got values: %s" %x)
             return x
