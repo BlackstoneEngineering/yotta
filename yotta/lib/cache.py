@@ -10,39 +10,37 @@ import os
 
 # fsutils, , misc filesystem utils, internal
 import fsutils
+# json, , read / write cache as json 
+import json
 
 # constants
-cache_file = os.path.expanduser('~/.yotta/cache.json')
+cache_location = os.path.expanduser('~/.yotta/cache/')
 
-if os.name == 'nt':
-    cache_file += [
-        os.path.expanduser(os.path.join(folders.prefix(),'cache.json'))
-    ]
+if os.name == 'posix':
+    cache_location = 
 
-# public API
+# public API used to access the "cache"
 
-def get(section):
-    logging.debug("getting %s" %section)
-    with open(cache_file,'r') as f:
-        x = json.load(f)
-        if section in x:
-            logging.debug("value = %s" % x.section)
-            return x.section
-        else:
-            return []
+def get(fname):
+    logging.debug("getting file %s" %fname)
+    #if file exists, return contents
+    if(os.isfile(cache_location+fname)):
+        with open(cache_location,'r') as f:
+            x = json.load(f)
+            logging.debug("Got values: %s" %x)
+            return x
+    # file doesnt exist, return empty dictionary
+    else:
+        logging.debug("file "+fname+" doesnt exist, returning empty dictionary")
+        return []
 
-def getProperty(section, name):
-    logging.debug("getting property %s.%s" % (section , name))
-    return get(section + '.' + name)
+def set(fname, value):
+    logging.debug("setting cache file %s with contents %s" % (fname,value))
+    with open((cache_location+fname),'w+') as f:
+        json.dump(value,f)
+    return
 
-def set(section, value):
-    logging.debug("setting section %s to value %s" % (section,value))
-    with open(cache_file,'rw') as f:
-        x = json.load(f)
-        x.section = value
-        json.dump(x,f)
+
     
-def setProperty(section, name, value):
-    logging.debug("setting property section %s, name %s, value %s" % (section,name,value))
-    set(section+'.'+name, value)
+
 
