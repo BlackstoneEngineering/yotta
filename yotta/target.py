@@ -20,6 +20,10 @@ from .lib import target
 from .lib import component
 # fsutils, , misc filesystem utils, internal
 from .lib import fsutils
+# cache, , used to update cache of available targets
+from .lib import cache
+# Registry Access, , access packages in the registry, internal
+from .lib import registry_access
 
 # OK this is a pretty terrible validation regex... should find a proper module
 # to do this
@@ -38,6 +42,10 @@ def addOptions(parser):
         default=False, action='store_true',
         help='set globally (in the per-user settings) instead of locally to this directory'
     )
+    parser.add_argument('-u','--updateLocal', dest='update_local', 
+        default=False,
+        help='update the local cache of targets available for tab completion'
+    )
 
     # FIXME: need help that lists possible targets, and we need a walkthrough
     # guide to forking a new target for an existing board
@@ -45,6 +53,14 @@ def addOptions(parser):
     # (the description of a target should have a list of things that it's
     #  similar to, e.g. objectador is similar to EFM32gg990f, #  EFM32gg,
     #  Cortex-M3, ARMv8, ARM)
+
+def updateTargetList():
+    targets = []
+    for result in registry_access.search(query='target', keywords=[], registry=registry_access.Registry_Base_URL):
+        targets.append(result['name'])
+        logging.debug("%s" % result['name']);
+    cache.set('targets',targets)
+    return
 
 
 def displayCurrentTarget(args):
@@ -102,6 +118,9 @@ def execCommand(args, following_args):
     if args.set_target is None:
         return displayCurrentTarget(args)
     else:
+        # TODO: update code so it searches all registries saved to system. (private, public, and local)
+        if args.updateLocal is True:
+            updateTargetList()            
         if not Target_RE.match(args.set_target):
             logging.error('''Invalid target: "%s"''' % args.set_target)#, targets must be one of:
             #
