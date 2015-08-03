@@ -16,16 +16,16 @@ import json
 # constants
 cache_location = os.path.expanduser('~/.yotta/cache/')
 
-if os.name == 'posix':
-    cache_location = 
+#if os.name == 'posix':
+#    cache_location = 
 
 # public API used to access the "cache"
 
 def get(fname):
     logging.debug("getting file %s" %fname)
     #if file exists, return contents
-    if(os.isfile(cache_location+fname)):
-        with open(cache_location,'r') as f:
+    if(os.path.isfile((cache_location+fname))):
+        with open(cache_location+fname,'r') as f:
             x = json.load(f)
             logging.debug("Got values: %s" %x)
             return x
