@@ -38,7 +38,7 @@ def addOptions(parser):
         help='set the build target to this (targetname[,versionspec_or_url])'
     )
     parser.add_argument('-g', '--global', dest='save_global',
-        default=True, action='store_true',
+        default=False, action='store_true',
         help='set globally (in the per-user settings) instead of locally to this directory'
     )
     parser.add_argument('-u','--updatelocal',
