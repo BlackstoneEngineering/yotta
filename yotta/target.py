@@ -33,19 +33,28 @@ Target_RE = re.compile('^('+
     ')?'+
 ')$')
 
+def targetCompletion(prefix, parsed_args, **kwargs):
+    t = cache.get('targets')
+    logging.debug("Target List = %s" %t)
+    print("Trying To Tab Complete... should return the following...")
+    for thing in t:
+        if thing.startswith(prefix):
+            print(thing)
+    return(x for x in t if x.startswith(prefix))
 
 def addOptions(parser):
     parser.add_argument('set_target', default=None, nargs='?',
         help='set the build target to this (targetname[,versionspec_or_url])'
-    )
+    ).ChoicesCompleter = targetCompletion
     parser.add_argument('-g', '--global', dest='save_global',
-        default=False, action='store_true',
+        default=True, action='store_true',
         help='set globally (in the per-user settings) instead of locally to this directory'
     )
-    parser.add_argument('-u','--updateLocal', dest='update_local', 
-        default=False,
+    parser.add_argument('-u','--updatelocal', 
+        dest='updateLocal', 
+        default=False, action='store_true',
         help='update the local cache of targets available for tab completion'
-    )
+    ).completer = targetCompletion
 
     # FIXME: need help that lists possible targets, and we need a walkthrough
     # guide to forking a new target for an existing board
@@ -58,9 +67,10 @@ def updateTargetList():
     targets = []
     for result in registry_access.search(query='target', keywords=[], registry=registry_access.Registry_Base_URL):
         targets.append(result['name'])
-        logging.debug("%s" % result['name']);
+        logging.debug("%s," % result['name']);
     cache.set('targets',targets)
-    return
+    logging.debug("Updated target cache to %s" %targets)
+    return 
 
 
 def displayCurrentTarget(args):
@@ -120,7 +130,8 @@ def execCommand(args, following_args):
     else:
         # TODO: update code so it searches all registries saved to system. (private, public, and local)
         if args.updateLocal is True:
-            updateTargetList()            
+            updateTargetList()
+            targetCompletion("frdm",0)            
         if not Target_RE.match(args.set_target):
             logging.error('''Invalid target: "%s"''' % args.set_target)#, targets must be one of:
             #

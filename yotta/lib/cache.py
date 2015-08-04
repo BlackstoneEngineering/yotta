@@ -19,7 +19,7 @@ import subprocess
 cache_location = os.path.expanduser('~/.yotta/cache/')
 
 #cygwin
-if (os.name == 'posix') and os.environ['OS'] == 'Windows_NT':
+if (os.name == 'posix') and os.environ.get('OS') == 'Windows_NT':
     logging.debug("Cygwin Detected, translating cache_location")
     cache_location = subprocess.check_output(['cygpath','-a','-w',cache_location])
     cache_location = cache_location.replace('\n','')
