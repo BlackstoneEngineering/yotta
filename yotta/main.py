@@ -19,6 +19,7 @@ from functools import reduce
 from .lib import logging_setup
 # detect, , detect things about the system, internal
 from .lib import detect
+import cache
 
 def logLevelFromVerbosity(v):
     return max(1, logging.INFO - v * (logging.ERROR-logging.NOTSET) // 5)
@@ -76,6 +77,13 @@ class FastVersionAction(argparse.Action):
         sys.exit(0)
 
 
+def targetCompletion(prefix, parsed_args, **kwargs):
+    t = cache.get('targets')
+    logging.debug("Target List = %s" %t)
+    # TODO: periodically update targets from here?
+    return(x for x in t if x.startswith(prefix))
+
+
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter,
@@ -101,7 +109,7 @@ def main():
     parser.add_argument('-t', '--target', dest='target',
         default=detect.defaultTarget(),
         help='Set the build and dependency resolution target (targetname[,versionspec_or_url])'
-    )
+    ).completer = targetCompletion
 
     parser.add_argument('--plain', dest='plain',
         action='store_true', default=False,
