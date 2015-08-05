@@ -19,7 +19,9 @@ from functools import reduce
 from .lib import logging_setup
 # detect, , detect things about the system, internal
 from .lib import detect
+import target
 import cache
+from .lib import registry_access
 
 def logLevelFromVerbosity(v):
     return max(1, logging.INFO - v * (logging.ERROR-logging.NOTSET) // 5)
@@ -78,10 +80,11 @@ class FastVersionAction(argparse.Action):
 
 
 def targetCompletion(prefix, parsed_args, **kwargs):
-    t = cache.get('targets')
-    logging.debug("Target List = %s" %t)
-    # TODO: periodically update targets from here?
-    return(x for x in t if x.startswith(prefix))
+    targets = []
+    for result in registry_access.search(query='target', keywords=[], registry=registry_access.Registry_Base_URL):
+        targets.append(result['name'])
+    #cache.set('targets',targets)
+    return(x for x in targets if x.startswith(prefix))
 
 
 def main():
